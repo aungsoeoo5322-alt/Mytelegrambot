@@ -29,14 +29,14 @@ user_links = {}
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "👋 မင်္ဂလာပါ! TikTok, YouTube, Facebook, Pinterest ဗီဒီယို Link များကို ပို့ပေးပါ။\n"
+        " မင်္ဂလာပါ! TikTok, YouTube, Facebook, Pinterest ဗီဒီယို Link များကို ပို့ပေးပါ။\n"
         "လိုချင်သော Quality ကို ရွေးချယ်ပြီး ဒေါင်းလုဒ်ဆွဲပေးပါမည်။"
     )
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text.strip()
     if not (url.startswith("http://") or url.startswith("https://")):
-        await update.message.reply_text("⚠️ ကျေးဇူးပြု၍ မှန်ကန်သော Video Link ကို ပို့ပေးပါရှင်။")
+        await update.message.reply_text(" ကျေးဇူးပြု၍ မှန်ကန်သော Video Link ကို ပို့ပေးပါရှင်။")
         return
 
     user_id = update.effective_user.id
@@ -53,7 +53,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text("🎬 လိုချင်သော Quality ကို ရွေးချယ်ပါ -", reply_markup=reply_markup)
+    await update.message.reply_text(" လိုချင်သော Quality ကို ရွေးချယ်ပါ -", reply_markup=reply_markup)
 
 async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -64,16 +64,17 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
     quality = query.data
 
     if not url:
-        await query.edit_message_text("❌ Error: Link သက်တမ်းကုန်သွားပါပြီ။ Link ကို ပြန်လည်ပို့ပေးပါ။")
+        await query.edit_message_text(" Error: Link သက်တမ်းကုန်သွားပါပြီ။ Link ကို ပြန်လည်ပို့ပေးပါ။")
         return
 
-    await query.edit_message_text(f"⏳ {quality} အရည်အသွေးဖြင့် ဒေါင်းလုဒ်ဆွဲနေပါသည်။ ခဏစောင့်ပေးပါ...")
+    await query.edit_message_text(f" {quality} အရည်အသွေးဖြင့် ဒေါင်းလုဒ်ဆွဲနေပါသည်။ ခဏစောင့်ပေးပါ...")
 
     output_filename = f"file_{user_id}"
 
-    # YouTube Bot Block ကျော်လွှားရန် Client Settings
+    # YouTube Bot Block ကျော်လွှားရန် Cookie အသုံးပြုခြင်း
     common_opts = {
         'quiet': True,
+        'cookiefile': 'cookies.txt',
         'extractor_args': {
             'youtube': {
                 'player_client': ['ios', 'android', 'mweb']
@@ -105,7 +106,7 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
 
-        await query.message.reply_text("📤 Telegram သို့ တင်ပို့နေပါပြီ...")
+        await query.message.reply_text(" Telegram သို့ တင်ပို့နေပါပြီ...")
         
         if os.path.exists(final_file):
             with open(final_file, 'rb') as file:
@@ -128,10 +129,10 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
             
             os.remove(final_file)
         else:
-            await query.message.reply_text("❌ ဒေါင်းလုဒ်ဆွဲထားသော ဖိုင်ကို ရှာမတွေ့ပါ။")
+            await query.message.reply_text(" ဒေါင်းလုဒ်ဆွဲထားသော ဖိုင်ကို ရှာမတွေ့ပါ။")
 
     except Exception as e:
-        await query.message.reply_text(f"❌ အမှားအယွင်းရှိပါသည်: {str(e)}")
+        await query.message.reply_text(f" အမှားအယွင်းရှိပါသည်: {str(e)}")
 
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
