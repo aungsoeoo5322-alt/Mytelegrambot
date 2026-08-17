@@ -71,8 +71,19 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     output_filename = f"file_{user_id}"
 
+    # YouTube Bot Block ကျော်လွှားရန် Client Settings
+    common_opts = {
+        'quiet': True,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['ios', 'android', 'mweb']
+            }
+        }
+    }
+
     if quality == "mp3":
         ydl_opts = {
+            **common_opts,
             'format': 'bestaudio/best',
             'outtmpl': f'{output_filename}.%(ext)s',
             'postprocessors': [{
@@ -80,14 +91,13 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
             }],
-            'quiet': True,
         }
         final_file = f"{output_filename}.mp3"
     else:
         ydl_opts = {
+            **common_opts,
             'format': f'bestvideo[height<={quality}]+bestaudio/best[height<={quality}]/best',
             'outtmpl': f'{output_filename}.mp4',
-            'quiet': True,
         }
         final_file = f"{output_filename}.mp4"
 
@@ -116,7 +126,6 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         read_timeout=300
                     )
             
-            # ဒေါင်းလုဒ်ပြီးလျှင် ဖိုင်ကို ပြန်ဖျက်၍ Storage ရှင်းရန်
             os.remove(final_file)
         else:
             await query.message.reply_text("❌ ဒေါင်းလုဒ်ဆွဲထားသော ဖိုင်ကို ရှာမတွေ့ပါ။")
@@ -133,3 +142,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
