@@ -1,9 +1,13 @@
-import os
-import os
+
+cimport os
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 class DummyServer(BaseHTTPRequestHandler):
+    def do_HEAD(self):
+        self.send_response(200)
+        self.end_headers()
+
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
